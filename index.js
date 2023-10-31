@@ -1,7 +1,9 @@
 const express = require('express');
 const app = express();
 const ejs = require('ejs');
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
+const { Webhook } = require('./gitmodel');
+require('./gitmodel')
 
 dotenv.config()
 const PORT = 8080;
@@ -9,12 +11,19 @@ const PORT = 8080;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get('/', (req, res) => {
-    res.send('h asd');
+app.get('/', async (req, res) => {
+
+    const data = await Webhook.find({})
+    res.send(data);
 });
 
 app.post('/git/', (req, res) => {
-    console.log(req.body)
+    const event = req.get('X-GitHub-Event');
+    const payload = req.body;
+
+    const newWebhook = new Webhook({ event, payload });
+
+    newWebhook.save().then((r) => console.log(r)).catch(err => console.log(errs));
 });
 
 
