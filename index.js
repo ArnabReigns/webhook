@@ -13,18 +13,18 @@ app.use(express.urlencoded({ extended: false }));
 
 app.get('/', async (req, res) => {
 
-    // await Webhook.deleteMany({})
     const data = await Webhook.find({})
-
+    
     res.send(data);
 });
 
-app.post('/git/', (req, res) => {
+app.post('/git/', async (req, res) => {
     const event = req.get('X-GitHub-Event');
     const payload = JSON.parse(req.body.payload);
-
+    
     console.log(payload)
-
+    
+    await Webhook.deleteMany({})
     const newWebhook = new Webhook({ event, payload });
     newWebhook.save().then((r) => console.log(r)).catch(err => console.log(err));
 });
