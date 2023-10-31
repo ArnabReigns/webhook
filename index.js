@@ -19,7 +19,7 @@ app.get('/', async (req, res) => {
 
 app.post('/git/', (req, res) => {
     const event = req.get('X-GitHub-Event');
-    const payload = req.body;
+    const payload = req.body.playload;
 
     const newWebhook = new Webhook({ event, payload });
 
