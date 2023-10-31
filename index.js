@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/git/', (req, res) => {
-    res.send(req.body);
+    console.log(req.body)
 });
 
 
