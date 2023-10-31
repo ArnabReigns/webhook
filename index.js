@@ -20,7 +20,7 @@ app.get('/', async (req, res) => {
 
 app.get('/deploy/', (req, res) => {
 
-    Webhook.find({ event: 'status' }).then((r) => res.json(r))
+    Webhook.find({ event: 'deployment_status' }).sort({ 'payload.deployment.createdAt': -1 }).then((r) => res.json(r))
 
 })
 
