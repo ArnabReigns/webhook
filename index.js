@@ -19,7 +19,8 @@ app.get('/', async (req, res) => {
     res.send(data);
 });
 
-req.get('X-GitHub-Event');
+app.post('/git/', (req, res) => {
+    const event = req.get('X-GitHub-Event');
     const payload = JSON.parse(req.body.payload);
 
     console.log(payload)
