@@ -14,6 +14,8 @@ app.use(express.urlencoded({ extended: false }));
 app.get('/', async (req, res) => {
 
     const data = await Webhook.find({})
+    // await Webhook.deleteMany({})
+
     res.send(data);
 });
 
@@ -23,8 +25,8 @@ app.post('/git/', (req, res) => {
 
     console.log(payload)
 
-    // const newWebhook = new Webhook({ event, payload });
-    // newWebhook.save().then((r) => console.log(r)).catch(err => console.log(errs));
+    const newWebhook = new Webhook({ event, payload });
+    newWebhook.save().then((r) => console.log(r)).catch(err => console.log(err));
 });
 
 
