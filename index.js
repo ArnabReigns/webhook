@@ -1,45 +1,31 @@
 const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
+
 const app = express();
-const ejs = require('ejs');
-const dotenv = require('dotenv');
-const { Webhook } = require('./gitmodel');
-require('./gitmodel')
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 
-dotenv.config()
-const PORT = 8080;
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-app.get('/', async (req, res) => {
-
-    const data = await Webhook.find({})
-
-    res.send(data);
+app.get('/', (req, res) => {
+    res.send('Arnab you made it!');
+});
+// Handle HTTP requests
+app.get('/api', (req, res) => {
+    res.json({ message: 'Hello, this is your HTTP API response!' });
 });
 
-app.get('/deploy/', (req, res) => {
+// Handle WebSocket connections
+wss.on('connection', (ws) => {
+    console.log('WebSocket client connected');
 
-    Webhook.find({ event: 'deployment_status' }).sort({ 'payload.deployment.createdAt': -1 }).then((r) => res.json(r))
-
-})
-
-app.get('/del', (req, res) => {
-
-    Webhook.deleteMany({}).then(r => res.send(r))
-})
-
-app.post('/git/', async (req, res) => {
-    const event = req.get('X-GitHub-Event');
-    const payload = JSON.parse(req.body.payload);
-
-    console.log(payload)
-
-    const newWebhook = new Webhook({ event, payload });
-    newWebhook.save().then((r) => console.log(r)).catch(err => console.log(err));
+    ws.on('message', (message) => {
+        console.log(`Received message: ${message}`);
+        ws.send(`Server received your message: ${message}`);
+    });
 });
 
-
-app.listen(PORT, () => {
-    console.log(`App started at http://localhost:${PORT}`);
+// Start the server
+const PORT = 3000;
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
